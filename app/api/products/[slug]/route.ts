@@ -1,19 +1,20 @@
-// app/api/products/[slug]/route.ts
 import { supabaseRoute } from "@/lib/supabaseRoute";
 import { ok, fail } from "@/lib/jsonResponse";
+import type { NextRequest } from "next/server";
 
-export const revalidate = 60;
-
+// manually define `params` as a Promise
 export async function GET(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  context: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await context.params;
+
   const db = supabaseRoute();
 
   const { data, error } = await db
     .from("products")
     .select("*")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
 
   if (error) return fail(error.message, 404);

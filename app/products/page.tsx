@@ -1,4 +1,4 @@
-// app/products/page.tsx
+
 
 import { cache } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";

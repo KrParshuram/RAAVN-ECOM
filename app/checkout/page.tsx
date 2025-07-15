@@ -10,7 +10,7 @@ import type { CartItemProps } from "@/components/cart/CartList";
 
 interface Address {
   id: string;
-  user_id: string;
+  // user_id: string;
   name: string;
   phone: string;
   address_line_1: string;
