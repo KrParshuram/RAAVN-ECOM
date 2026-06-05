@@ -5,7 +5,11 @@ import MarqueeStrip from "@/components/MarqueeStrip";
 import ShadowTestimonial from "@/components/ShadowTestimonial";
 import HoverMessageBlock from "@/components/HoverMessageBlock";
 import PhilosophyGrid from "@/components/PhilosophyGrid";
+import type { DBProduct } from "@/components/productCard";
+import { supabaseServer } from "@/lib/supabaseServer";
 import {NewsletterSection} from "@/components/NewsletterSection";
+import { cache } from 'react'; // Add this import if using React 18+
+// If you are using Next.js App Router, use: import { cache } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
 /* -------------------------------------------------------------------------- */
@@ -43,11 +47,11 @@ function HeroSection() {
 /*                            PRODUCT CARD (ATOM)                             */
 /* -------------------------------------------------------------------------- */
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: DBProduct & { quote: string } }) {
   return (
     <div className="border border-gray-800 p-4 rounded-xl hover:scale-105 transition-transform">
       <img
-        src={product.image}
+        src={product.image_paths?.[0]}
         alt={`T‑Shirt ${product.id}`}
         className="w-full h-80 object-cover rounded mb-4"
       />
@@ -63,7 +67,7 @@ function ProductCard({ product }: { product: Product }) {
 /*                           DROP SHOWCASE SECTION                             */
 /* -------------------------------------------------------------------------- */
 
-function DropShowcase({ products }: { products: Product[] }) {
+function DropShowcase({ products }: { products: (DBProduct & { quote: string })[] }) {
   return (
     <section id="drop1" className="py-16 px-4 bg-black text-white">
       <h2 className="text-2xl md:text-3xl font-semibold text-center mb-12">
@@ -77,6 +81,7 @@ function DropShowcase({ products }: { products: Product[] }) {
     </section>
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /*                           PHILOSOPHY SECTION                                */
@@ -110,13 +115,57 @@ function SiteFooter() {
 /*                               PAGE WRAPPER                                 */
 /* -------------------------------------------------------------------------- */
 
-export default function HomePage() {
+export default async function HomePage() {
   // Fake data – replace with Supabase / API later
-  const products: Product[] = Array.from({ length: 6 }).map((_, i) => ({
-    id: i + 1,
-    quote: "Silence is a language. We wear it well.",
-    image: `https://picsum.photos/400/400?random=${i + 1}`,
-  }));
+  // const products: Product[] = Array.from({ length: 6 }).map((_, i) => ({
+  //   id: i + 1,
+  //   quote: "Silence is a language. We wear it well.",
+  //   image: `https://picsum.photos/400/400?random=${i + 1}`,
+  // }));
+
+  const raavnQuotes = [
+  // "Silence is a language. We wear it well.",
+  "Not broken. Just written differently.",
+  "Your chaos looks good on you.",
+  "Truth wears black.",
+  "I exist louder in shadows.",
+  "No gods. No masters. Just me.",
+  "Scars are my signature.",
+  "This isn’t fashion. It’s confession.",
+  "I am the question you don't ask.",
+  "Pain. Printed."
+];
+
+const getProducts = cache(async (): Promise<(DBProduct & { quote: string })[]> => {
+  const supabase = supabaseServer();
+
+  const { data, error } = await supabase
+    .from("homepage_products")
+    .select("id, image_paths, sizes, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.warn("Supabase products unavailable:", error.message);
+    return [];
+  }
+
+  return (data ?? []).map((p: any) => {
+    const quote = raavnQuotes[p.id % raavnQuotes.length]; // Deterministic quote
+    return {
+      ...p,
+      quote,
+      image_paths: p.image_paths ?? [],
+      sizes: p.sizes ?? [],
+    };
+  });
+});
+
+
+
+const products = await getProducts();
+
+
+
 
   return (
     <main className="bg-black min-h-screen">

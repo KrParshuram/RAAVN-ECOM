@@ -9,6 +9,15 @@ import PhilosophyGrid from '@/components/PhilosophyGrid'
 export const revalidate = 600;
 
 const getProducts = cache(async (): Promise<DBProduct[]> => {
+  console.log(
+  "SUPABASE_URL:",
+  process.env.NEXT_PUBLIC_SUPABASE_URL
+);
+
+console.log(
+  "SUPABASE_KEY:",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 25)
+);
   const supabase = supabaseServer();
 
   const { data, error } = await supabase

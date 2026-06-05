@@ -21,8 +21,8 @@ export default function SignUpPage() {
               card: "bg-zinc-900 border border-zinc-800",
             },
             variables: {
-              colorPrimary: "#ffffff",
-              colorBackground: "#000000",
+              colorPrimary: "#000000ff",
+              colorBackground: "#fcfbfbff",
             },
           }} />
         </div>
