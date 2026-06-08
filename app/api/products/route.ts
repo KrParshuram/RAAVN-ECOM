@@ -9,7 +9,7 @@ export  async function GET(){
 
     //read-only view we have created suing SQL --homepage_products
 
-    const {data,error} = await db.from("homepage_products").select("*");
+    const {data,error} = await db.from("products").select("*");
 
     if(error) return fail(error.message, 500);
 
