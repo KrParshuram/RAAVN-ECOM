@@ -1,158 +1,265 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import clsx from "clsx";
+
+import { ShoppingBag, Menu, X } from "lucide-react";
+
 import {
   UserButton,
   SignedIn,
   SignedOut,
   SignInButton,
-  SignUpButton,
 } from "@clerk/nextjs";
-import { motion, AnimatePresence } from "framer-motion";
 
-
+import { AnimatePresence, motion } from "framer-motion";
+import clsx from "clsx";
 
 export default function Header() {
-
   const cartCount = useSelector((state: RootState) =>
-    state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
+    state.cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    )
   );
 
-
   const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
-
   const [open, setOpen] = useState(false);
 
-  const linkClass =
-    "block py-2 md:py-0 hover:text-primary transition-colors font-medium";
+  useEffect(() => {
+    const handler = () =>
+      setScrolled(window.scrollY > 20);
+
+    window.addEventListener("scroll", handler);
+
+    return () =>
+      window.removeEventListener("scroll", handler);
+  }, []);
+
+  const desktopLink =
+    "uppercase tracking-[0.25em] text-xs text-white/80 hover:text-white transition-colors";
 
   return (
-    <header
-      className={clsx(
-        "fixed inset-x-0 z-50 transition-colors backdrop-blur",
-        scrolled ? "bg-white/80 shadow-sm" : "bg-transparent"
-      )}
-    >
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href="/"
-          className={clsx(
-            "text-xl font-extrabold tracking-widest",
-            scrolled ? "text-primary" : "text-white"
-          )}
-        >
-          RAAVN
-        </Link>
+    <>
+      <header
+        className={clsx(
+          "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+          scrolled
+            ? "bg-black/70 backdrop-blur-xl border-b border-white/10"
+            : "bg-transparent"
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          {/* LEFT */}
 
-        {/* Desktop nav */}
-        <nav
-          className={clsx(
-            "hidden md:flex items-center gap-8",
-            scrolled ? "text-gray-800" : "text-white"
-          )}
-        >
-          <Link href="/products" className={linkClass}>
-            DROP EXCLUSIVES
+          <div className="flex items-center gap-10">
+            <Link
+              href="/"
+              className="
+                text-sm
+                font-semibold
+                tracking-[0.55em]
+                uppercase
+                text-white
+              "
+            >
+              RAAVN
+            </Link>
+          </div>
+
+          {/* DESKTOP NAV */}
+
+          <nav className="hidden md:flex items-center gap-10">
+            <Link
+              href="/products"
+              className={desktopLink}
+            >
+              Drop
+            </Link>
+
+            <a
+              href="/philosophy"
+              className={desktopLink}
+            >
+              Philosophy
+            </a>
+
+            <Link
+              href="/cart"
+              className="relative uppercase tracking-[0.25em] text-xs text-white/80 hover:text-white transition-colors"
+            >
+              Cart
+
+              {cartCount > 0 && (
+                <span className="absolute -top-3 -right-4 text-[10px] text-white">
+                  ({cartCount})
+                </span>
+              )}
+            </Link>
+
+                <Link
+            href="/account"
+            className={desktopLink}
+          >
+            Account
           </Link>
 
-          {/* Cart */}
-          <Link href="/cart" className="relative">
-            <ShoppingCart className={clsx("w-6 h-6", scrolled ? "text-gray-800" : "text-white")} />
+        
 
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox:
+                      "w-8 h-8",
+                  },
+                }}
+              />
+            </SignedIn>
 
-          {/* Auth area */}
-          <SignedIn>
-            <UserButton appearance={{ elements: { userButtonAvatarBox: "w-8 h-8" } }} />
-          </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button
+                  className="
+                    uppercase
+                    tracking-[0.25em]
+                    text-xs
+                    text-white/80
+                    hover:text-white
+                    transition-colors
+                  "
+                >
+                  Account
+                </button>
+              </SignInButton>
+            </SignedOut>
+          </nav>
 
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90">
-                Sign&nbsp;in
-              </button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary/10">
-                Sign&nbsp;up
-              </button>
-            </SignUpButton>
-          </SignedOut>
-        </nav>
+          {/* MOBILE ACTIONS */}
 
-        {/* Mobile menu button */}
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
-         {open ? (
-            <X className={clsx("w-6 h-6", scrolled ? "text-gray-800" : "text-white")} />
-          ) : (
-            <Menu className={clsx("w-6 h-6", scrolled ? "text-gray-800" : "text-white")} />
-          )}
+          <div className="flex items-center gap-4 md:hidden">
+            <Link
+              href="/cart"
+              className="relative"
+            >
+              <ShoppingBag className="w-5 h-5 text-white" />
 
-        </button>
-      </div>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 text-[10px] text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
-      {/* Mobile slide‑down */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="text-white"
+            >
+              {open ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE FULLSCREEN MENU */}
+
       <AnimatePresence>
         {open && (
-          <motion.nav
-            initial={{ height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden bg-white shadow-inner"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.3,
+            }}
+            className="
+              fixed
+              inset-0
+              z-40
+              bg-black
+              text-white
+            "
           >
-            <div className="px-4 pb-4 flex flex-col gap-4 text-gray-800">
-              <Link href="/products" className={linkClass} onClick={() => setOpen(false)}>
-                Products
-              </Link>
+            <div className="h-full flex flex-col justify-center items-center text-center px-6">
+              <div className="space-y-8">
+                <Link
+                  href="/products"
+                  onClick={() => setOpen(false)}
+                  className="
+                    block
+                    text-5xl
+                    font-black
+                    tracking-tight
+                  "
+                >
+                  DROP
+                </Link>
 
-              <Link href="/cart" className="relative" onClick={() => setOpen(false)}>
-                <ShoppingCart className="w-6 h-6 inline-block" />
-                <span className="ml-2">Cart</span>
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+                <a
+                  href="#philosophy"
+                  onClick={() => setOpen(false)}
+                  className="
+                    block
+                    text-5xl
+                    font-black
+                    tracking-tight
+                  "
+                >
+                  PHILOSOPHY
+                </a>
 
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-10 h-10" } }} />
-              </SignedIn>
+                <Link
+                  href="/cart"
+                  onClick={() => setOpen(false)}
+                  className="
+                    block
+                    text-5xl
+                    font-black
+                    tracking-tight
+                  "
+                >
+                  CART
+                </Link>
 
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="w-full px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90">
-                    Sign in
-                  </button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="w-full px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary/10">
-                    Sign up
-                  </button>
-                </SignUpButton>
-              </SignedOut>
+                <SignedIn>
+                  <div className="flex justify-center pt-6">
+                    <UserButton
+                      appearance={{
+                        elements: {
+                          userButtonAvatarBox:
+                            "w-12 h-12",
+                        },
+                      }}
+                    />
+                  </div>
+                </SignedIn>
+
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button
+                      className="
+                        mt-6
+                        uppercase
+                        tracking-[0.3em]
+                        text-sm
+                        text-zinc-400
+                      "
+                    >
+                      ACCOUNT
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+              </div>
             </div>
-          </motion.nav>
+          </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

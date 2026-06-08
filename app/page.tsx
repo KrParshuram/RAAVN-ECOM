@@ -1,184 +1,254 @@
-
-
-import React from "react";
-import MarqueeStrip from "@/components/MarqueeStrip";
-import ShadowTestimonial from "@/components/ShadowTestimonial";
-import HoverMessageBlock from "@/components/HoverMessageBlock";
-import PhilosophyGrid from "@/components/PhilosophyGrid";
-import type { DBProduct } from "@/components/productCard";
+import { cache } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
-import {NewsletterSection} from "@/components/NewsletterSection";
-import { cache } from 'react'; // Add this import if using React 18+
-// If you are using Next.js App Router, use: import { cache } from 'react';
+import ProductCard, { DBProduct } from "@/components/productCard";
+
 /* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
+/* TYPES */
 /* -------------------------------------------------------------------------- */
 
-type Product = {
-  id: number;
-  quote: string;
-  image: string;
+type Drop = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  manifesto: string | null;
+  hero_image: string | null;
+  status: string;
 };
 
 /* -------------------------------------------------------------------------- */
-/*                               HERO SECTION                                 */
+/* DATA */
+/* -------------------------------------------------------------------------- */
+
+const getActiveDrop = cache(async (): Promise<Drop | null> => {
+  const supabase = supabaseServer();
+
+  const { data, error } = await supabase
+    .from("drops")
+    .select("*")
+    .eq("status", "live")
+    .single();
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
+  return data;
+});
+
+const getDropProducts = cache(
+  async (dropId: string): Promise<DBProduct[]> => {
+    const supabase = supabaseServer();
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("drop_id", dropId)
+      .order("created_at");
+
+    if (error) {
+      console.error(error);
+      return [];
+    }
+
+    return (data ?? []) as DBProduct[];
+  }
+);
+
+/* -------------------------------------------------------------------------- */
+/* HERO */
 /* -------------------------------------------------------------------------- */
 
 function HeroSection() {
   return (
-    <section className="h-screen w-full bg-black text-white flex items-center justify-center text-center px-4">
-      <div className="space-y-6">
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-          I am not your god.<br />I am not your villain.
-        </h1>
-        <p className="text-sm md:text-lg text-gray-400">Drop 1 – Now Live</p>
-        <a
-          href="#drop1"
-          className="inline-block px-8 py-3 border border-white rounded-full hover:bg-white hover:text-black transition-all duration-300"
-        >
-          Explore Drop 1
-        </a>
+    <section className="relative min-h-screen bg-black text-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 h-screen flex flex-col justify-between py-10">
+        <div>
+          <p className="uppercase tracking-[0.45em] text-zinc-500 text-xs">
+            RAAVN
+          </p>
+        </div>
+
+          <div className="space-y-4">
+            <h1 className="text-[4rem] md:text-[8rem] lg:text-[10rem] font-black leading-[0.88] tracking-tight">
+              I'M NOT
+              <br />
+              YOUR GOD.
+            </h1>
+
+            <h1 className="text-[4rem] md:text-[8rem] lg:text-[10rem] font-black leading-[0.88] tracking-tight text-white/20">
+              I'M NOT
+              <br />
+              YOUR VILLAIN.
+            </h1>
+
+            <p className="max-w-md pt-8 text-zinc-400 text-lg">
+              Statement pieces for people who stopped asking for permission.
+            </p>
+          </div>
+
+        <div>
+          <p className="uppercase tracking-[0.35em] text-zinc-600 text-xs">
+            Scroll to enter
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                            PRODUCT CARD (ATOM)                             */
+/* MANIFESTO */
 /* -------------------------------------------------------------------------- */
 
-function ProductCard({ product }: { product: DBProduct & { quote: string } }) {
+function ManifestoSection({
+  manifesto,
+}: {
+  manifesto: string | null;
+}) {
   return (
-    <div className="border border-gray-800 p-4 rounded-xl hover:scale-105 transition-transform">
-      <img
-        src={product.image_paths?.[0]}
-        alt={`T‑Shirt ${product.id}`}
-        className="w-full h-80 object-cover rounded mb-4"
-      />
-      <h3 className="text-lg font-semibold mb-2">“{product.quote}”</h3>
-      <a href="#" className="text-sm text-gray-400 hover:underline">
-        View Product →
-      </a>
-    </div>
-  );
-}
+    <section className="bg-black text-white py-32 md:py-48">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-3">
+            <p className="uppercase tracking-[0.35em] text-zinc-500 text-xs">
+              Manifesto
+            </p>
+          </div>
 
-/* -------------------------------------------------------------------------- */
-/*                           DROP SHOWCASE SECTION                             */
-/* -------------------------------------------------------------------------- */
-
-function DropShowcase({ products }: { products: (DBProduct & { quote: string })[] }) {
-  return (
-    <section id="drop1" className="py-16 px-4 bg-black text-white">
-      <h2 className="text-2xl md:text-3xl font-semibold text-center mb-12">
-        Drop 1 — Statement T‑Shirts
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
+          <div className="lg:col-span-9">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-light leading-[1.2] max-w-5xl">
+              {manifesto}
+            </h2>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-
 /* -------------------------------------------------------------------------- */
-/*                           PHILOSOPHY SECTION                                */
+/* DROP INTRO */
 /* -------------------------------------------------------------------------- */
 
-function PhilosophySection() {
+function DropIntro({ drop }: { drop: Drop }) {
   return (
-    <section className="py-24 px-6 text-center bg-gray-900 text-white">
-      <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Raavn?</h2>
-      <p className="max-w-2xl mx-auto text-lg text-gray-400">
-        Raavn is not a fashion brand. It is a reflection of what you never said out loud. Every
-        piece is a mirror — sharp, raw, and personal.
-      </p>
+    <section className="bg-black text-white py-32 border-t border-zinc-900">
+      <div className="max-w-7xl mx-auto px-6">
+        <p className="uppercase tracking-[0.35em] text-zinc-500 text-xs mb-8">
+          Current Drop
+        </p>
+
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-10">
+          {drop.title}
+        </h2>
+
+        <p className="max-w-2xl text-zinc-400 text-lg leading-relaxed">
+          {drop.description}
+        </p>
+      </div>
     </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                   FOOTER                                   */
+/* PRODUCTS */
 /* -------------------------------------------------------------------------- */
 
-function SiteFooter() {
+function ProductsSection({
+  products,
+}: {
+  products: DBProduct[];
+}) {
   return (
-    <footer className="py-10 text-center text-gray-500 text-sm bg-black border-t border-gray-800">
-      <p>© {new Date().getFullYear()} Raavn. All rights reserved.</p>
-    </footer>
+    <section className="bg-black text-white pb-32">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               PAGE WRAPPER                                 */
+/* COMMUNITY */
+/* -------------------------------------------------------------------------- */
+
+function CommunitySection() {
+  return (
+    <section className="border-t border-zinc-900 bg-black text-white py-32">
+      <div className="max-w-3xl mx-auto px-6 text-center">
+        <p className="uppercase tracking-[0.35em] text-zinc-500 text-xs mb-6">
+          Community
+        </p>
+
+        <h2 className="text-4xl md:text-6xl font-black mb-8">
+          ENTER THE CIRCLE
+        </h2>
+
+        <p className="text-zinc-400 mb-12">
+          Early access to drops. Behind-the-scenes releases.
+          Collection previews. No noise.
+        </p>
+
+        <form className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="flex-1 border border-zinc-800 bg-transparent px-5 py-4 text-white outline-none"
+          />
+
+          <button
+            type="submit"
+            className="px-8 py-4 bg-white text-black font-medium"
+          >
+            Join
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* PAGE */
 /* -------------------------------------------------------------------------- */
 
 export default async function HomePage() {
-  // Fake data – replace with Supabase / API later
-  // const products: Product[] = Array.from({ length: 6 }).map((_, i) => ({
-  //   id: i + 1,
-  //   quote: "Silence is a language. We wear it well.",
-  //   image: `https://picsum.photos/400/400?random=${i + 1}`,
-  // }));
+  const activeDrop = await getActiveDrop();
 
-  const raavnQuotes = [
-  // "Silence is a language. We wear it well.",
-  "Not broken. Just written differently.",
-  "Your chaos looks good on you.",
-  "Truth wears black.",
-  "I exist louder in shadows.",
-  "No gods. No masters. Just me.",
-  "Scars are my signature.",
-  "This isn’t fashion. It’s confession.",
-  "I am the question you don't ask.",
-  "Pain. Printed."
-];
-
-const getProducts = cache(async (): Promise<(DBProduct & { quote: string })[]> => {
-  const supabase = supabaseServer();
-
-  const { data, error } = await supabase
-    .from("homepage_products")
-    .select("id, image_paths, sizes, created_at")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.warn("Supabase products unavailable:", error.message);
-    return [];
+  if (!activeDrop) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        No active drop found.
+      </main>
+    );
   }
 
-  return (data ?? []).map((p: any) => {
-    const quote = raavnQuotes[p.id % raavnQuotes.length]; // Deterministic quote
-    return {
-      ...p,
-      quote,
-      image_paths: p.image_paths ?? [],
-      sizes: p.sizes ?? [],
-    };
-  });
-});
-
-
-
-const products = await getProducts();
-
-
-
+  const products = await getDropProducts(
+    activeDrop.id
+  );
 
   return (
     <main className="bg-black min-h-screen">
       <HeroSection />
-      <MarqueeStrip />
-      <DropShowcase products={products} />
-      <ShadowTestimonial />
-      
-      <PhilosophySection />
-      <HoverMessageBlock />
-      <PhilosophyGrid />
-      <NewsletterSection />
-      <SiteFooter />
+
+      <ManifestoSection
+        manifesto={activeDrop.manifesto}
+      />
+
+      <DropIntro drop={activeDrop} />
+
+      <ProductsSection products={products} />
+
+      <CommunitySection />
     </main>
   );
 }

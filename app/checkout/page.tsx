@@ -87,9 +87,23 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 text-white space-y-8">
-      <h1 className="text-3xl font-bold mb-4">Checkout</h1>
+      <div className="mb-16">
+  <p className="uppercase tracking-[0.35em] text-xs text-zinc-500 mb-4">
+    Final Review
+  </p>
 
-      <div className="space-y-6">
+  <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-none">
+    COMPLETE
+    <br />
+    THE STORY.
+  </h1>
+
+  <p className="mt-6 text-zinc-400 max-w-xl">
+    Review your delivery details and
+    confirm your selection.
+  </p>
+</div>
+      <div className="grid lg:grid-cols-[1fr_420px] gap-16">
         {/* Address Section */}
         <div>
           <div className="flex items-center justify-between mb-2">

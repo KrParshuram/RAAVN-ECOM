@@ -26,35 +26,91 @@ export default function AddressList({
 }: AddressListProps) {
   if (addresses.length === 0) {
     return (
-      <p className="text-gray-400">
-        No addresses found. Please add a new address.
-      </p>
+      <div className="border-t border-zinc-800 pt-8">
+        <h3 className="text-2xl font-black mb-4">
+          NO SAVED ADDRESSES.
+        </h3>
+
+        <p className="text-zinc-500">
+          Add a delivery address to continue.
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="border-t border-zinc-800">
       {addresses.map((address) => {
-        const isSelected = address.id === selectedId;
+        const selected =
+          address.id === selectedId;
 
         return (
-          <div
+          <button
             key={address.id}
+            type="button"
             onClick={() => onSelect(address)}
-            className={`cursor-pointer border rounded-xl p-4 bg-neutral-900 hover:border-white transition-all ${
-              isSelected ? "border-white ring-2 ring-blue-500" : "border-neutral-700"
-            }`}
+            className="
+              w-full
+              text-left
+              border-b
+              border-zinc-800
+              py-8
+              transition-opacity
+              hover:opacity-100
+            "
           >
-            <p className="font-semibold text-white">{address.name}</p>
-            <p className="text-sm text-gray-400">{address.phone}</p>
-            <p className="text-sm text-gray-400">
-              {address.address_line_1}, {address.address_line_2}
-            </p>
-            <p className="text-sm text-gray-400">
-              {address.city}, {address.state} - {address.pincode}
-            </p>
-            <p className="text-sm text-gray-400">{address.country}</p>
-          </div>
+            <div className="grid md:grid-cols-[40px_1fr] gap-6">
+
+              {/* Radio */}
+
+              <div className="pt-1">
+                <div
+                  className={`
+                    h-4
+                    w-4
+                    rounded-full
+                    border
+                    ${
+                      selected
+                        ? "border-white bg-white"
+                        : "border-zinc-600"
+                    }
+                  `}
+                />
+              </div>
+
+              {/* Content */}
+
+              <div>
+                <div className="flex flex-wrap items-center gap-4 mb-3">
+                  <h3 className="text-xl font-medium text-white">
+                    {address.name}
+                  </h3>
+
+                  <span className="text-zinc-500 text-sm">
+                    {address.phone}
+                  </span>
+                </div>
+
+                <p className="text-zinc-400 leading-relaxed">
+                  {address.address_line_1}
+                  {address.address_line_2 &&
+                    `, ${address.address_line_2}`}
+                </p>
+
+                <p className="mt-2 text-zinc-500">
+                  {address.city},{" "}
+                  {address.state}{" "}
+                  {address.pincode}
+                </p>
+
+                <p className="text-zinc-600 text-sm mt-1">
+                  {address.country}
+                </p>
+              </div>
+
+            </div>
+          </button>
         );
       })}
     </div>

@@ -1,104 +1,169 @@
-// components/product/SocialProof.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
 type Review = {
-  id: number;
-  name: string;
-  avatarUrl?: string;
-  rating: number; // 1–5
-  comment: string;
+id: string;
+
+userName: string;
+
+avatarUrl?: string;
+
+rating: number;
+
+comment: string;
+
+verified?: boolean;
+
+createdAt?: string;
 };
 
-type SocialProofProps = {
-  averageRating?: number;
-  totalReviews?: number;
-  reviews?: Review[];
-};
+interface SocialProofProps {
+averageRating?: number;
 
-const Stars = ({ value }: { value: number }) => (
-  <div className="flex gap-0.5">
-    {Array.from({ length: 5 }).map((_, i) => (
-      <Star
-        key={i}
-        className={i < value ? "w-4 h-4 fill-yellow-400 text-yellow-400" : "w-4 h-4 text-zinc-500"}
-      />
-    ))}
-  </div>
+totalReviews?: number;
+
+reviews?: Review[];
+}
+
+function Stars({ rating }: { rating: number }) {
+return ( <div className="flex gap-1">
+{Array.from({ length: 5 }).map((_, i) => (
+<Star
+key={i}
+className={
+i < rating
+? "h-4 w-4 fill-yellow-400 text-yellow-400"
+: "h-4 w-4 text-zinc-600"
+}
+/>
+))} </div>
 );
+}
 
 export function SocialProof({
-  averageRating = 4.5,
-  totalReviews = 24,
-  reviews = [
-    {
-      id: 1,
-      name: "Sneha",
-      rating: 5,
-      comment: "Softest tee I've ever owned! Colors stay bright after washing.",
-      avatarUrl: "/avatars/1.png",
-    },
-    {
-      id: 2,
-      name: "Rajan",
-      rating: 4,
-      comment: "Great fit and breathable fabric. Perfect for Indian summers.",
-      avatarUrl: "/avatars/2.png",
-    },
-    {
-      id: 3,
-      name: "Aisha",
-      rating: 5,
-      comment: "Stitching quality is top-notch. Definitely buying more!",
-    },
-  ],
+averageRating = 4.8,
+totalReviews = 128,
+reviews = [],
 }: SocialProofProps) {
-  return (
-    <section className="max-w-6xl mx-auto px-4 py-16">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        {/* Rating Summary */}
-        <Card className="bg-zinc-900 border border-zinc-800 text-white text-center hover:scale-105 transition-transform duration-300">
-          <CardHeader className="space-y-2 flex flex-col items-center">
-            <div className="text-4xl font-bold">{averageRating.toFixed(1)}</div>
-            <Stars value={Math.round(averageRating)} />
-            <p className="text-sm text-zinc-400">{totalReviews} verified reviews</p>
-          </CardHeader>
-        </Card>
+return ( <section className="max-w-7xl mx-auto px-6 py-24">
+        
+  <div className="border-t border-zinc-800 pt-16">
 
-        {/* First 2 Reviews */}
-        {reviews.slice(0, 2).map((r) => (
-          <Card
-            key={r.id}
-            className="bg-zinc-900 border border-zinc-800 hover:scale-105 transition-transform duration-300 text-white"
-          >
-            <CardContent className="p-6 space-y-4">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 border border-zinc-700">
-                  {r.avatarUrl && <AvatarImage src={r.avatarUrl} alt={r.name} />}
-                  <AvatarFallback className="text-xs bg-zinc-700 text-white">
-                    {r.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="font-medium text-white">{r.name}</span>
-                  <Stars value={r.rating} />
-                </div>
-              </div>
-              <p className="text-sm text-zinc-400 leading-relaxed">“{r.comment}”</p>
-            </CardContent>
-          </Card>
-        ))}
-      </motion.div>
-    </section>
-  );
+    <div className="mb-12">
+
+      <p className="uppercase tracking-[0.35em] text-xs text-zinc-500 mb-4">
+        Community
+      </p>
+
+      <h2 className="text-4xl md:text-5xl font-black">
+        What People Are Saying
+      </h2>
+
+    </div>
+
+    <div className="grid lg:grid-cols-4 gap-6">
+
+      {/* Rating Summary */}
+
+      <div
+        className="
+          border
+          border-zinc-800
+          rounded-2xl
+          p-8
+          bg-zinc-950
+          flex
+          flex-col
+          justify-center
+        "
+      >
+        <div className="text-5xl font-black">
+          {averageRating.toFixed(1)}
+        </div>
+
+        <div className="mt-4">
+          <Stars rating={Math.round(averageRating)} />
+        </div>
+
+        <p className="text-zinc-500 mt-3">
+          {totalReviews} reviews
+        </p>
+      </div>
+
+      {/* Reviews */}
+
+      {reviews.length === 0 && (
+  <div
+    className="
+      lg:col-span-3
+      border
+      border-zinc-800
+      rounded-2xl
+      p-10
+      bg-zinc-950
+      text-center
+    "
+  >
+    <p className="text-zinc-400">
+      No reviews yet.
+    </p>
+
+    <p className="text-zinc-600 mt-2 text-sm">
+      Be the first to share your thoughts.
+    </p>
+  </div>
+)}
+
+      {reviews.slice(0, 3).map((review) => (
+        <motion.div
+          key={review.id}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{ once: true }}
+          className="
+            border
+            border-zinc-800
+            rounded-2xl
+            p-6
+            bg-zinc-950
+          "
+        >
+          <div className="flex items-center justify-between mb-4">
+
+            <div>
+              <p className="font-medium">
+                {review.userName}
+              </p>
+
+              {review.createdAt && (
+                <p className="text-xs text-zinc-500">
+                  {review.createdAt}
+                </p>
+              )}
+            </div>
+
+
+          </div>
+
+          <Stars rating={review.rating} />
+
+          <p className="mt-4 text-zinc-400 leading-relaxed">
+            "{review.comment}"
+          </p>
+        </motion.div>
+      ))}
+
+    </div>
+
+  </div>
+
+</section>
+
+
+);
 }

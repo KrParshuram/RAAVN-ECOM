@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Trash2, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 
 export interface CartItemProps {
   id: string;
@@ -26,51 +25,98 @@ export default function CartItem({
   onRemove,
 }: CartItemProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-6 border border-neutral-800 rounded-2xl p-4 sm:p-5 bg-[#121212] shadow hover:shadow-lg transition-all">
-      {/* Image */}
-      <div className="relative w-full sm:w-[120px] h-[120px] overflow-hidden rounded-xl">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-300 hover:scale-105"
-        />
-      </div>
+    <article className="border-b border-zinc-800 pb-10">
+      <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-8">
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col justify-between gap-2">
-        <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-white">{title}</h2>
-          <p className="text-sm text-gray-400 mt-1">Size: <span className="text-gray-200">{size}</span></p>
+        {/* Image */}
+
+        <div className="relative aspect-[4/5] overflow-hidden bg-zinc-950">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover"
+          />
         </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-gray-400 text-sm">
-            ₹{price} × {quantity}{" "}
-            <span className="text-white font-semibold text-base">= ₹{price * quantity}</span>
-          </p>
+        {/* Content */}
 
-          <div className="flex items-center gap-3">
-            <Button
-              size="icon"
-              variant="outline"
-              className="border-white text-black hover:bg-white hover:text-black"
-              onClick={() => onIncrement?.(id)}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
+        <div className="flex flex-col justify-between">
 
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-red-600 hover:text-white text-gray-400"
+          <div>
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
+              {title}
+            </h2>
+
+            <div className="mt-6 space-y-2 text-sm text-zinc-500">
+              <p>Size {size}</p>
+
+              <p>
+                ₹{price.toLocaleString()}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-8 mt-10">
+
+            {/* Quantity */}
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => onRemove?.(id)}
+                className="
+                  text-zinc-500
+                  hover:text-white
+                  transition-colors
+                "
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+
+              <span className="text-white min-w-[24px] text-center">
+                {quantity}
+              </span>
+
+              <button
+                onClick={() => onIncrement?.(id)}
+                className="
+                  text-zinc-500
+                  hover:text-white
+                  transition-colors
+                "
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Total */}
+
+            <p className="text-white text-lg font-medium">
+              ₹{(
+                price * quantity
+              ).toLocaleString()}
+            </p>
+
+            {/* Remove */}
+
+            <button
               onClick={() => onRemove?.(id)}
+              className="
+                text-sm
+                uppercase
+                tracking-[0.2em]
+                text-zinc-500
+                hover:text-white
+                transition-colors
+              "
             >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+              Remove
+            </button>
+
           </div>
         </div>
+
       </div>
-    </div>
+    </article>
   );
 }

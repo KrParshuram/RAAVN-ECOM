@@ -108,7 +108,9 @@ export default function LikeButton({
           )}
         />
       </button>
-      <span className="text-sm text-zinc-400">{count} likes</span>
+      <span className="text-sm text-zinc-400">
+        {count} saved
+      </span>
     </div>
   );
 }

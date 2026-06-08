@@ -1,159 +1,245 @@
-// components/product/ProductHero.tsx
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
-import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { SizeSelector, Size } from "@/components/product/SizeSelector";
-import AddToCartButton from "@/components/addtocart";
+
 import LikeButton from "@/components/product/LikeButton";
- // Import if you need tooltips
+import AddToCartButton from "@/components/addtocart";
+import { SizeSelector, Size } from "@/components/product/SizeSelector";
+
 interface ProductHeroProps {
-  productId: string;
-  title: string;
-  category?: string | null;
-  imageUrl?: string | string[] | null; // single or array
-  likes: number;
-  likedByUser?: boolean;
-  price?: number;
+product: {
+id: string;
+title: string;
+slug: string;
+price: number;
+
+
+statement?: string | null;
+
+image_paths?: string[];
+
+sizes?: string[];
+
+likes?: number;
+
+drop_id: string;
+
+
+};
+
+drop?: {
+title: string;
+manifesto?: string | null;
+};
+
+reviewStats?: {
+averageRating: number;
+totalReviews: number;
+};
 }
 
 export default function ProductHero({
-  productId,
-  title,
-  category,
-  imageUrl,
-  likes,
-  likedByUser = false,
-  price,
+product,
+drop,
+reviewStats,
 }: ProductHeroProps) {
-  /* ------------------------------------------------------------------ */
-  /*                              Setup                                 */
-  /* ------------------------------------------------------------------ */
-  const images = Array.isArray(imageUrl)
-    ? imageUrl
-    : imageUrl
-    ? [imageUrl]
-    : [];
+const images = product.image_paths ?? [];
 
-  const [activeImg, setActiveImg] = useState(images[0]);
-  const [liked, setLiked] = useState(likedByUser);
-  const [size, setSize] = useState<Size>("M");
+const [activeImg, setActiveImg] = useState(
+images[0] ?? "/placeholder.jpg"
+);
 
-  const displayLikes = liked ? likes + 1 : likes;
+const [selectedSize, setSelectedSize] =
+  useState(product.sizes?.[0] ?? "");
 
-  /* ------------------------------------------------------------------ */
-  /*                               UI                                   */
-  /* ------------------------------------------------------------------ */
-  return (
-    <section className="w-full max-w-6xl mx-auto px-4 py-16 md:py-20 flex flex-col gap-12 md:flex-row md:gap-10">
-      {/* --------------------- Image Gallery --------------------- */}
-      {activeImg && (
-        <div className="w-full md:w-1/2 space-y-4">
-          {/* main image */}
-          <motion.div
-            key={activeImg}
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="group w-full aspect-square relative overflow-hidden rounded-xl bg-zinc-800"
-          >
-            <Image
-              src={activeImg}
-              alt={title}
-              fill
-              className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </motion.div>
+return ( <section className="w-full max-w-7xl mx-auto px-6 py-16 md:py-24">
 
+  <div className="grid lg:grid-cols-2 gap-16">
 
-          {/* thumbs */}
-          {images.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto">
-              {images.map((src) => (
-                <button
-                  key={src}
-                  onClick={() => setActiveImg(src)}
-                  className={cn(
-                    "relative h-16 w-16 shrink-0 rounded-lg overflow-hidden transition ring-1 ring-transparent",
-                    activeImg === src
-                      ? "ring-primary"
-                      : "opacity-70 hover:opacity-100"
-                  )}
-                >
-                  <Image
-                    src={src}
-                    alt="thumbnail"
-                    fill
-                    className="object-cover object-center"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
+    {/* IMAGE GALLERY */}
+
+    <div className="space-y-4">
+
+      <motion.div
+        key={activeImg}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="
+          group
+          relative
+          aspect-square
+          overflow-hidden
+          rounded-2xl
+          bg-zinc-900
+          cursor-zoom-in
+        "
+      >
+        <Image
+          src={activeImg}
+          alt={product.title}
+          fill
+          priority
+          sizes="(max-width:768px) 100vw, 50vw"
+          className="
+            object-cover
+            transition-transform
+            duration-700
+            group-hover:scale-110
+          "
+        />
+      </motion.div>
+
+      {images.length > 1 && (
+        <div className="flex gap-3 overflow-x-auto pb-2">
+
+          {images.map((src) => (
+            <button
+              key={src}
+              onClick={() => setActiveImg(src)}
+              className={cn(
+                "relative h-24 w-24 shrink-0 overflow-hidden rounded-xl ring-1 transition",
+                activeImg === src
+                  ? "ring-white"
+                  : "ring-zinc-800 opacity-70 hover:opacity-100"
+              )}
+            >
+              <Image
+                src={src}
+                alt="Product thumbnail"
+                fill
+                className="object-cover"
+              />
+            </button>
+          ))}
+
         </div>
       )}
+    </div>
 
-      {/* ------------------------ Info Block ------------------------ */}
-      <div
-        className={cn(
-          "flex-1 space-y-6",
-          !activeImg && "text-center mx-auto max-w-lg"
-        )}
-      >
-        {category && (
-          <p className="uppercase tracking-wide text-xs text-zinc-400">
-            {category}
+    {/* PRODUCT INFO */}
+
+      <div className="flex flex-col justify-center">
+
+        {drop?.title && (
+          <p className="mb-8 uppercase tracking-[0.35em] text-xs text-zinc-500">
+            {drop.title}
           </p>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white">
-          {title}
-        </h1>
+        <div className="space-y-8">
 
-        {/* likes */}
-        <LikeButton
-      productId={productId}
-      initialLiked={likedByUser}
-      initialCount={likes}
-    />
+          <div>
 
-        {/* size */}
-        <SizeSelector value={size} onChange={setSize} />
+            <h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tight">
+              {product.title}
+            </h1>
 
-        {/* price */}
-        {price !== undefined && (
-          <div className="text-2xl font-semibold text-white">
-            ₹{price.toLocaleString()}
           </div>
-        )}
 
-        {/* CTA */}
-        <div className="grid gap-3 pt-3">
-          <Button
-            className="w-full bg-zinc-700 hover:bg-zinc-500 transition p-5 "
-            onMouseEnter={(e) => (e.currentTarget.innerText = "Wear Now")}
-            onMouseLeave={(e) => (e.currentTarget.innerText = "Buy Now")}
-          >
-            Buy Now
-          </Button>
+          {product.statement && (
+            <p className="max-w-lg text-xl md:text-2xl text-zinc-400 italic leading-relaxed">
+              {product.statement}
+            </p>
+          )}
 
-          <AddToCartButton
-            product={{
-              title,
-              price: price ?? 0,
-              image: activeImg ?? "",
-              size,
-              id: productId, // needed for Supabase insert
-            }}
-          />
+          <div className="flex items-end justify-between border-b border-zinc-800 pb-8">
+
+            <div>
+              <p className="text-4xl md:text-5xl font-bold">
+                ₹{product.price.toLocaleString()}
+              </p>
+
+              <p className="mt-2 text-sm text-zinc-500">
+                Inclusive of all taxes
+              </p>
+            </div>
+
+            <LikeButton
+              productId={product.id}
+              initialCount={product.likes ?? 0}
+            />
+
+          </div>
+
+          {reviewStats && (
+            <div className="text-sm text-zinc-500">
+              ★ {reviewStats.averageRating} ·{" "}
+              {reviewStats.totalReviews} Reviews
+            </div>
+          )}
+
+          <div className="space-y-4">
+
+            <p className="uppercase tracking-[0.2em] text-xs text-zinc-500">
+              Select Size
+            </p>
+
+            <SizeSelector
+              sizes={product.sizes ?? []}
+              value={selectedSize}
+              onChange={setSelectedSize}
+            />
+
+          </div>
+
+          <div className="grid gap-3 pt-4">
+
+            <Button
+              className="h-14 bg-white text-black hover:bg-zinc-200 text-base font-medium"
+            >
+              Buy Now
+            </Button>
+
+            <AddToCartButton
+              product={{
+                id: product.id,
+                title: product.title,
+                price: product.price,
+                image: activeImg,
+                size: selectedSize,
+              }}
+            />
+
+          </div>
+
+          <div className="pt-10 border-t border-zinc-800">
+
+            <div className="space-y-4 text-sm text-zinc-400 leading-relaxed">
+
+              <p>
+                100% heavyweight cotton.
+              </p>
+
+              <p>
+                Relaxed oversized silhouette.
+              </p>
+
+              <p>
+                Produced exclusively for this drop.
+              </p>
+
+              <p>
+                Designed to age with wear.
+              </p>
+
+            </div>
+
+          </div>
+
         </div>
+
       </div>
-    </section>
-  );
+
+  </div>
+
+</section>
+
+
+);
 }

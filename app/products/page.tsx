@@ -2,22 +2,30 @@
 
 import { cache } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
-import ProductList from "@/components/ProductList";
+import ProductSearch
+  from "@/components/ProductSearch";
 import type { DBProduct } from "@/components/productCard";
-import PhilosophyGrid from '@/components/PhilosophyGrid'
+// import PhilosophyGrid from '@/components/PhilosophyGrid'
 
 export const revalidate = 600;
 
-const getProducts = cache(async (): Promise<DBProduct[]> => {
-  console.log(
-  "SUPABASE_URL:",
-  process.env.NEXT_PUBLIC_SUPABASE_URL
-);
+const getActiveDrop = cache(async () => {
+  const supabase = supabaseServer();
 
-console.log(
-  "SUPABASE_KEY:",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 25)
-);
+  const { data } = await supabase
+    .from("drops")
+    .select("*")
+    .eq("status", "live")
+    .single();
+
+  return data;
+});
+
+const activeDrop = await getActiveDrop();
+
+const getProducts = cache(async (): Promise<DBProduct[]> => {
+
+
   const supabase = supabaseServer();
 
   const { data, error } = await supabase
@@ -49,22 +57,47 @@ export default async function ProductsPage() {
   return (
    <main className="min-h-screen bg-black text-white py-12 w-full">
   {/* ── Page Header ───────────────────────────────────────────────── */}
-  <div className="max-w-4xl mx-auto px-4 text-center mb-12">
-    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-      The Drop Wall
-    </h1>
-    <p className="text-zinc-400 text-base md:text-lg leading-relaxed">
-      “<span className="italic text-zinc-300">Wear stories, not just colours.</span>” <br />
-      Limited-run pieces crafted for rebels — stand out, stay raw.
-    </p>
-  </div>
+      <section className="px-6 pt-20 md:pt-32 pb-24">
+        <div className="max-w-7xl mx-auto">
+
+          <p className="uppercase tracking-[0.4em] text-zinc-500 text-xs mb-8">
+            LIVE DROP
+          </p>
+
+          <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.9] tracking-tight max-w-6xl">
+            {activeDrop?.title}
+          </h1>
+
+          <div className="mt-12 grid lg:grid-cols-12 gap-10">
+
+            <div className="lg:col-span-7">
+              <p className="text-xl md:text-2xl text-zinc-300 leading-relaxed">
+                {activeDrop?.description}
+              </p>
+            </div>
+
+            <div className="lg:col-span-5">
+              <p className="text-zinc-500 leading-relaxed">
+                Designed for people who stopped asking for permission.
+                Limited garments. Permanent statements.
+              </p>
+
+              <p className="mt-6 text-sm uppercase tracking-[0.25em] text-zinc-600">
+                {products.length} Pieces In This Release
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
 
   {/* ── Product List or Empty ────────────────────────────────────── */}
   <div className="w-full">
     {products.length > 0 ? (
-      <div className="border-t border-b border-zinc-800 bg-zinc-900">
-        <ProductList products={products} />
-      </div>
+      <section className="border-t border-zinc-800">
+        <ProductSearch products={products} />
+      </section>
     ) : (
       <div className="py-32 text-center text-zinc-500">
         <div className="text-7xl mb-4">🕊️</div>
@@ -75,8 +108,9 @@ export default async function ProductsPage() {
       </div>
     )}
   </div>
+  {/* <PhilosophyGrid /> */}
     
-  <PhilosophyGrid />
+
 </main>
 
   );

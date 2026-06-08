@@ -6,12 +6,13 @@ import supabase from "@/lib/supabaseBrowser";
 import CartItem from "@/components/cart/CartList";
 import CartSummary from "@/components/cart/CartSummary";
 import type { CartItemProps } from "@/components/cart/CartList";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const [items, setItems] = useState<CartItemProps[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
-
+  const router = useRouter();
   useEffect(() => {
     const fetchCartItems = async () => {
       if (!user) return;
@@ -93,18 +94,45 @@ export default function CartPage() {
     );
   }
 
-  return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-12 py-10 max-w-6xl mx-auto text-white">
-      <h1 className="text-3xl sm:text-4xl font-bold mb-10">Your Cart</h1>
+return (
+  <main className="min-h-screen bg-black text-white">
+    <div className="max-w-7xl mx-auto px-6 py-20 md:py-28">
+
+      {/* Header */}
+
+      <div className="mb-20">
+        <p className="uppercase tracking-[0.35em] text-xs text-zinc-500 mb-6">
+          Cart
+        </p>
+
+        <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-none">
+          YOUR
+          <br />
+          SELECTION.
+        </h1>
+
+        <p className="mt-8 text-zinc-400 max-w-xl text-lg">
+          The pieces you've chosen to carry forward.
+        </p>
+      </div>
 
       {items.length === 0 ? (
-        <div className="text-center text-gray-400 text-lg mt-10">
-          Your cart is empty. Browse products and add something to it.
+        <div className="py-32 border-t border-zinc-800">
+
+          <h2 className="text-3xl md:text-5xl font-black mb-6">
+            NOTHING HERE YET.
+          </h2>
+
+          <p className="text-zinc-500 max-w-md">
+            The pieces that speak to you
+            will appear here.
+          </p>
+
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Cart Items */}
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid lg:grid-cols-[1fr_380px] gap-16">
+
+          <div className="space-y-8">
             {items.map((item) => (
               <CartItem
                 key={item.id}
@@ -114,18 +142,26 @@ export default function CartPage() {
                 price={item.price}
                 size={item.size}
                 quantity={item.quantity}
-                onIncrement={() => onIncrement(item.id)}
-                onRemove={() => onRemove(item.id)}
+                onIncrement={() =>
+                  onIncrement(item.id)
+                }
+                onRemove={() =>
+                  onRemove(item.id)
+                }
               />
             ))}
           </div>
 
-          {/* Cart Summary */}
-          <div className="md:col-span-1">
-            <CartSummary total={total} />
+          <div className="lg:sticky lg:top-32 h-fit">
+            <CartSummary
+              total={total}
+              onCheckout={() => router.push("/checkout")}
+            />
           </div>
+
         </div>
       )}
     </div>
-  );
+  </main>
+);
 }

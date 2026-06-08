@@ -78,87 +78,232 @@ export default function AddressForm({ onSuccess }: AddressFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-neutral-900 rounded-2xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 shadow-md"
-    >
+<form
+  onSubmit={handleSubmit}
+  className="space-y-12"
+>
+  {/* Header */}
+
+  <div>
+    <p className="uppercase tracking-[0.35em] text-xs text-zinc-500 mb-4">
+      Delivery
+    </p>
+
+    <h2 className="text-3xl md:text-5xl font-black tracking-tight">
+      DELIVERY
+      <br />
+      DETAILS.
+    </h2>
+  </div>
+
+  {/* Form */}
+
+  <div className="grid md:grid-cols-2 gap-10">
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        Full Name
+      </label>
+
       <input
         name="name"
-        placeholder="Full Name"
         value={form.name}
         onChange={handleChange}
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        Phone
+      </label>
+
       <input
         name="phone"
-        placeholder="Phone Number"
         value={form.phone}
         onChange={handleChange}
-        pattern="[0-9]{10}"
-        title="Enter 10-digit phone number"
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div className="md:col-span-2">
+      <label className="block text-sm text-zinc-500 mb-3">
+        Address Line 1
+      </label>
+
       <input
         name="address_line_1"
-        placeholder="Address Line 1"
         value={form.address_line_1}
         onChange={handleChange}
         required
-        className="col-span-full bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div className="md:col-span-2">
+      <label className="block text-sm text-zinc-500 mb-3">
+        Address Line 2
+      </label>
+
       <input
         name="address_line_2"
-        placeholder="Address Line 2"
         value={form.address_line_2}
         onChange={handleChange}
-        className="col-span-full bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        City
+      </label>
+
       <input
         name="city"
-        placeholder="City"
         value={form.city}
         onChange={handleChange}
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        State
+      </label>
+
       <input
         name="state"
-        placeholder="State"
         value={form.state}
         onChange={handleChange}
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        Pincode
+      </label>
+
       <input
         name="pincode"
-        placeholder="Pincode"
         value={form.pincode}
         onChange={handleChange}
-        pattern="[0-9]{6}"
-        title="Enter 6-digit pincode"
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
+
+    <div>
+      <label className="block text-sm text-zinc-500 mb-3">
+        Country
+      </label>
+
       <input
         name="country"
-        placeholder="Country"
         value={form.country}
         onChange={handleChange}
         required
-        className="bg-neutral-800 text-white p-3 rounded-md placeholder:text-gray-400"
+        className="
+          w-full
+          bg-transparent
+          border-b
+          border-zinc-700
+          pb-3
+          text-white
+          outline-none
+          focus:border-white
+        "
       />
+    </div>
 
-      <div className="col-span-full">
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-white text-black py-3 rounded-md font-semibold hover:bg-gray-100 transition"
-        >
-          {loading ? "Saving..." : "Save Address"}
-        </button>
-      </div>
-    </form>
+  </div>
+
+  {/* CTA */}
+
+  <button
+    type="submit"
+    disabled={loading}
+    className="
+      w-full
+      h-14
+      bg-white
+      text-black
+      font-medium
+      hover:bg-zinc-200
+      transition
+    "
+  >
+    {loading
+      ? "SAVING..."
+      : "SAVE DELIVERY DETAILS"}
+  </button>
+</form>
   );
 }
