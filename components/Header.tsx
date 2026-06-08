@@ -99,42 +99,44 @@ export default function Header() {
               )}
             </Link>
 
-                <Link
-            href="/account"
-            className={desktopLink}
-          >
-            Account
-          </Link>
-
+           
+           
+ 
         
 
-            <SignedIn>
-              <UserButton
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox:
-                      "w-8 h-8",
-                  },
-                }}
-              />
-            </SignedIn>
+<SignedIn>
+  <Link
+    href="/account"
+    className={desktopLink}
+  >
+    Account
+  </Link>
 
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button
-                  className="
-                    uppercase
-                    tracking-[0.25em]
-                    text-xs
-                    text-white/80
-                    hover:text-white
-                    transition-colors
-                  "
-                >
-                  Account
-                </button>
-              </SignInButton>
-            </SignedOut>
+  <UserButton
+    appearance={{
+      elements: {
+        userButtonAvatarBox: "w-8 h-8",
+      },
+    }}
+  />
+</SignedIn>
+
+<SignedOut>
+  <SignInButton mode="modal">
+    <button
+      className="
+        uppercase
+        tracking-[0.25em]
+        text-xs
+        text-white/80
+        hover:text-white
+        transition-colors
+      "
+    >
+      Account
+    </button>
+  </SignInButton>
+</SignedOut>
           </nav>
 
           {/* MOBILE ACTIONS */}
