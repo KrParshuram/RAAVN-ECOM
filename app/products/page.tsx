@@ -21,9 +21,11 @@ const getActiveDrop = cache(async () => {
   return data;
 });
 
-const activeDrop = await getActiveDrop();
+
 
 const getProducts = cache(async (): Promise<DBProduct[]> => {
+
+ 
 
 
   const supabase = supabaseServer();
@@ -52,7 +54,10 @@ export const metadata = {
 };
 
 export default async function ProductsPage() {
+  // const products = await getProducts();
+  const activeDrop = await getActiveDrop();
   const products = await getProducts();
+
 
   return (
    <main className="min-h-screen bg-black text-white py-12 w-full">
