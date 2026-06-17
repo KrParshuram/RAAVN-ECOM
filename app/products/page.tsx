@@ -15,7 +15,7 @@ const getActiveDrop = cache(async () => {
   const { data } = await supabase
     .from("drops")
     .select("*")
-    .eq("status", "live")
+    .eq("status", "live" )
     .single();
 
   return data;
@@ -64,10 +64,11 @@ export default async function ProductsPage() {
   {/* ── Page Header ───────────────────────────────────────────────── */}
       <section className="px-6 pt-20 md:pt-32 pb-24">
         <div className="max-w-7xl mx-auto">
-
-          <p className="uppercase tracking-[0.4em] text-zinc-500 text-xs mb-8">
-            LIVE DROP
-          </p>
+          
+        <div className="flex items-center gap-2 uppercase tracking-[0.4em] text-zinc-300 text-xs mb-8">
+          <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+          <span>LIVE</span>
+        </div>
 
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.9] tracking-tight max-w-6xl">
             {activeDrop?.title}

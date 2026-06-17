@@ -127,5 +127,26 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
+body {
+  background: black;
+}
+
+::selection {
+  background: white;
+  color: black;
+}
+
+/* Hide scrollbar */
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+body {
+  scrollbar-width: none;
+}
 

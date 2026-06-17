@@ -73,18 +73,27 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center gap-10">
             <Link
-              href="/products"
+              href="/drops"
               className={desktopLink}
             >
               Drop
             </Link>
 
-            <a
+             <Link
+              href="/products"
+              className={desktopLink}
+            >
+              Products
+            </Link>
+
+
+
+            <Link
               href="/philosophy"
               className={desktopLink}
             >
               Philosophy
-            </a>
+            </Link>
 
             <Link
               href="/cart"
@@ -122,20 +131,21 @@ export default function Header() {
 </SignedIn>
 
 <SignedOut>
-  <SignInButton mode="modal">
-    <button
-      className="
-        uppercase
-        tracking-[0.25em]
-        text-xs
-        text-white/80
-        hover:text-white
-        transition-colors
-      "
+  <div className="flex items-center gap-6">
+    <Link
+      href="/login"
+      className={desktopLink}
     >
-      Account
-    </button>
-  </SignInButton>
+      Login
+    </Link>
+
+    <Link
+      href="/sign-up"
+      className={desktopLink}
+    >
+      Sign Up
+    </Link>
+  </div>
 </SignedOut>
           </nav>
 
@@ -191,7 +201,7 @@ export default function Header() {
             <div className="h-full flex flex-col justify-center items-center text-center px-6">
               <div className="space-y-8">
                 <Link
-                  href="/products"
+                  href="/drops"
                   onClick={() => setOpen(false)}
                   className="
                     block
@@ -202,9 +212,22 @@ export default function Header() {
                 >
                   DROP
                 </Link>
+                
+                <Link
+                  href="/products"
+                  onClick={() => setOpen(false)}
+                  className="
+                    block
+                    text-5xl
+                    font-black
+                    tracking-tight
+                  "
+                >
+                  PRODUCTS
+                </Link>
 
-                <a
-                  href="#philosophy"
+                <Link
+                  href="/philosophy"
                   onClick={() => setOpen(false)}
                   className="
                     block
@@ -214,7 +237,7 @@ export default function Header() {
                   "
                 >
                   PHILOSOPHY
-                </a>
+                </Link>
 
                 <Link
                   href="/cart"
@@ -242,21 +265,25 @@ export default function Header() {
                   </div>
                 </SignedIn>
 
-                <SignedOut>
-                  <SignInButton mode="modal">
-                    <button
-                      className="
-                        mt-6
-                        uppercase
-                        tracking-[0.3em]
-                        text-sm
-                        text-zinc-400
-                      "
-                    >
-                      ACCOUNT
-                    </button>
-                  </SignInButton>
-                </SignedOut>
+<SignedOut>
+  <div className="mt-6 flex flex-col gap-4">
+    <Link
+      href="/login"
+      onClick={() => setOpen(false)}
+      className="uppercase tracking-[0.3em] text-sm text-zinc-400"
+    >
+      LOGIN
+    </Link>
+
+    <Link
+      href="/sign-up"
+      onClick={() => setOpen(false)}
+      className="uppercase tracking-[0.3em] text-sm text-zinc-400"
+    >
+      SIGN UP
+    </Link>
+  </div>
+</SignedOut>
               </div>
             </div>
           </motion.div>

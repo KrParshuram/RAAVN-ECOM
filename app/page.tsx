@@ -16,6 +16,7 @@ type Drop = {
   status: string;
 };
 
+
 /* -------------------------------------------------------------------------- */
 /* DATA */
 /* -------------------------------------------------------------------------- */
@@ -222,7 +223,11 @@ function CommunitySection() {
 /* -------------------------------------------------------------------------- */
 
 export default async function HomePage() {
+
   const activeDrop = await getActiveDrop();
+
+  // only call when we have a userId
+
 
   if (!activeDrop) {
     return (
@@ -247,6 +252,7 @@ export default async function HomePage() {
       <DropIntro drop={activeDrop} />
 
       <ProductsSection products={products} />
+
 
       <CommunitySection />
     </main>

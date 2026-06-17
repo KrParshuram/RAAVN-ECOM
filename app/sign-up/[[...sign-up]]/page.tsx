@@ -95,9 +95,9 @@ export default function SignUpPage() {
                 },
 
                 variables: {
-                  colorPrimary: "#ffffff",
-                  colorBackground: "#000000",
-                  colorText: "#ffffff",
+                  colorPrimary: "#000000",
+                  colorBackground: "#ffffff",
+                  colorText: "#000000",
                 },
               }}
             />
